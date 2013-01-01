@@ -53,15 +53,12 @@ class PWM :
     self.i2c.write8(self.__PRESCALE, int(math.floor(prescale)))
     self.i2c.write8(self.__MODE1, oldmode)
     time.sleep(0.005)
-    self.i2c.write8(self.__MODE1, oldmode | 0x80)
+    self.i2c.write8(self.__MODE1, oldmode | 0xa1)#auto increment address
 
   def setPWM(self, channel, on, off):
     "Sets a single PWM channel"
-    self.i2c.write8(self.__LED0_ON_L+4*channel, on & 0xFF)
-    self.i2c.write8(self.__LED0_ON_H+4*channel, on >> 8)
-    self.i2c.write8(self.__LED0_OFF_L+4*channel, off & 0xFF)
-    self.i2c.write8(self.__LED0_OFF_H+4*channel, off >> 8)
-
-
-
-
+    self.i2c.writeList(self.__LED0_ON_L+4*channel,
+                    [on & 0xFF,
+                    on>>8,
+                    off&0xFF,
+                    off>>8]);
